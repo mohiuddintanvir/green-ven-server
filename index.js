@@ -49,6 +49,8 @@ async function run() {
 
 
         // orders api
+
+        // C
         app.get('/orders', async (req, res) => {
 
             let query = {};
@@ -64,13 +66,30 @@ async function run() {
             const orders = await cursor.toArray();
             res.send(orders)
         })
-
+        //   R
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await ordersCollection.insertOne(order);
             res.send(result)
 
         })
+
+        // U
+        app.patch('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.body.statusa
+            const query = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    status: status
+                }
+            }
+            const result = await ordersCollection.updateOne(query, updateDoc)
+            res.send(result)
+        })
+
+
+        // d
         app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
