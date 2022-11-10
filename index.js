@@ -28,10 +28,12 @@ async function run() {
 
         app.get('/services', async (req, res) => {
             const query = {}
-            const cursor = serviceCollection.find(query);
+            const { limit } = req.query;
+            const cursor = serviceCollection.find(query).limit(parseInt(limit) || 3).sort({ "service_date": -1 });
             const services = await cursor.toArray();
             res.send(services)
         });
+
 
 
 
@@ -54,6 +56,15 @@ async function run() {
 
 
         // orders api
+        app.get('/orders/:id', async (req, res) => {
+            const service = req.params.id;
+            const query = { id: service };
+
+
+            const cursor = ordersCollection.find(query).sort({ "review_date": -1 });
+            const myreviews = await cursor.toArray();
+            res.send(myreviews);
+        });
 
         // C
         app.get('/orders', async (req, res) => {
@@ -87,18 +98,20 @@ async function run() {
             res.send(user);
         })
         app.put('/orders/:id', async (req, res) => {
+
             const id = req.params.id;
-            // const status = req.body.status
-            const query = { _id: ObjectId(id) };
-            const updateduser = req.body;
-            console.log(updateduser)
-            // const updateDoc = {
-            //     $set: {
-            //         status: status
-            //     }
-            // }
-            // const result = await ordersCollection.updateOne(query, updateDoc)
-            // res.send(result)
+            const filter = { _id: ObjectId(id) }
+            const user = req.body;
+            const option = { upsert: true }
+
+            const updatedUser = {
+                $set: {
+                    name: user.name,
+                    email: user.email,
+                }
+            }
+            const result = await usercollection.updateOne(filter, updatedUser, option);
+            res.send(result);
         })
 
 
