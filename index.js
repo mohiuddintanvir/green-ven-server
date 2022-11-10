@@ -86,17 +86,19 @@ async function run() {
             const user = await ordersCollection.findOne(query)
             res.send(user);
         })
-        app.patch('/orders/:id', async (req, res) => {
+        app.put('/orders/:id', async (req, res) => {
             const id = req.params.id;
-            const status = req.body.statusa
+            // const status = req.body.status
             const query = { _id: ObjectId(id) };
-            const updateDoc = {
-                $set: {
-                    status: status
-                }
-            }
-            const result = await ordersCollection.updateOne(query, updateDoc)
-            res.send(result)
+            const updateduser = req.body;
+            console.log(updateduser)
+            // const updateDoc = {
+            //     $set: {
+            //         status: status
+            //     }
+            // }
+            // const result = await ordersCollection.updateOne(query, updateDoc)
+            // res.send(result)
         })
 
 
